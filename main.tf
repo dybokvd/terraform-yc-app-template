@@ -44,11 +44,7 @@ resource "yandex_compute_instance" "vm" {
   }
 
   boot_disk {
-    initialize_params {
-      image_id = "fd806u1okplml22f4pmo" # Ubuntu 22.04 LTS image
-      size     = 10                     # GB
-      type     = "network-hdd"
-    }
+    disk_id = yandex_compute_disk.boot_disk.id
   }
 
   network_interface {
@@ -64,4 +60,17 @@ resource "yandex_compute_instance" "vm" {
 
   # Allow Terraform to stop the resource if needed when applying changes
   allow_stopping_for_update = true
+}
+
+resource "yandex_compute_disk" "boot_disk" {
+  name = "terraform-yc-app-template-boot-disk"
+
+  image_id = "fd806u1okplml22f4pmo" # Ubuntu 22.04 LTS image
+  size     = 10                     # GB
+  type     = "network-hdd"
+
+  lifecycle {
+    # Prevent accidental resource destruction by making Terraform fail instead
+    prevent_destroy = true
+  }
 }
