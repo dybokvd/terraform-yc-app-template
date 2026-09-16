@@ -50,7 +50,8 @@ resource "yandex_compute_instance" "vm" {
   network_interface {
     subnet_id = "e9b6ninrcea75f4ors6f"
     # Assign a dynamic public IP address
-    nat = true
+    nat            = true
+    nat_ip_address = yandex_vpc_address.public_ip.external_ipv4_address[0].address
   }
 
   metadata = {
@@ -73,4 +74,15 @@ resource "yandex_compute_disk" "boot_disk" {
     # Prevent accidental resource destruction by making Terraform fail instead
     prevent_destroy = true
   }
+}
+
+resource "yandex_vpc_address" "public_ip" {
+  name = "terraform-yc-app-template-public-ip"
+
+  external_ipv4_address {
+    zone_id = "ru-central1-a"
+  }
+
+  # To delete a resource created with this flag using Terraform, you must first disable this setting through the Yandex Cloud web interface
+  deletion_protection = true
 }

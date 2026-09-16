@@ -18,8 +18,11 @@ The managed infrastructure, on the one hand, consists of a minimal set of resour
 
 The configuration describes the following set of resources:
 
-- a virtual machine with a dynamic public IP address;
-- an HDD disk attached to the virtual machine, used to store the operating system and other data.
+- a virtual machine;
+- an HDD disk attached to the virtual machine, used to store the operating system and other data;
+- a static public IP address assigned to the virtual machine.
+
+The disk and the IP address are managed independently of the virtual machine. This makes it possible to preserve the data and the IP address in cases where Terraform has to recreate the virtual machine — for example, when its configuration changes.
 
 All resources are created within a single availability zone, `ru-central1-a`, which carries the risk of a complete system outage. If your system has higher availability requirements, consider a more advanced configuration with resources spread across multiple availability zones and traffic balancing between them.
 
