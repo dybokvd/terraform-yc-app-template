@@ -45,6 +45,8 @@ resource "yandex_compute_instance" "vm" {
 
   boot_disk {
     disk_id = yandex_compute_disk.boot_disk.id
+    # Prevents the boot disk from being automatically deleted when the virtual machine is deleted
+    auto_delete = false
   }
 
   network_interface {
