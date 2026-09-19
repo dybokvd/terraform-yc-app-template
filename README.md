@@ -14,9 +14,14 @@ The state of the managed infrastructure is stored in Yandex Object Storage, an S
 
 ### What Infrastructure Is Created
 
-The managed infrastructure, on the one hand, consists of a minimal set of resources, which simplifies maintenance and keeps costs to a minimum, while on the other hand, it can support systems made up of a large number of components.
+The managed infrastructure consists of a minimal set of resources, which simplifies maintenance and keeps costs to a minimum. At the same time, it is self-contained and suitable for systems made up of a large number of components.
 
-The configuration describes the following set of resources:
+First, the configuration explicitly creates the necessary networking infrastructure:
+
+- a network that the resources belong to;
+- a subnet in the `ru-central1-a` availability zone.
+
+The resources are then created inside this network:
 
 - a virtual machine;
 - an HDD disk attached to the virtual machine, used to store the operating system and other data;
@@ -24,7 +29,7 @@ The configuration describes the following set of resources:
 
 The disk and the IP address are managed independently of the virtual machine. This makes it possible to preserve the data and the IP address in cases where Terraform has to recreate the virtual machine — for example, when its configuration changes.
 
-All resources are created within a single availability zone, `ru-central1-a`, which carries the risk of a complete system outage. If your system has higher availability requirements, consider a more advanced configuration with resources spread across multiple availability zones and traffic balancing between them.
+The compute resources are created within a single availability zone, which carries the risk of a complete system outage. If your system has higher availability requirements, consider a more advanced configuration with resources spread across multiple availability zones and traffic balancing between them.
 
 ## Initial Setup
 

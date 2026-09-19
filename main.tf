@@ -30,6 +30,17 @@ provider "yandex" {
   zone = "ru-central1-a"
 }
 
+resource "yandex_vpc_network" "network" {
+  name = "terraform-yc-app-template-network"
+}
+
+resource "yandex_vpc_subnet" "ru_central1_a" {
+  name           = "terraform-yc-app-template-subnet-ru-central1-a"
+  zone           = "ru-central1-a"
+  network_id     = yandex_vpc_network.network.id
+  v4_cidr_blocks = ["10.10.0.0/24"]
+}
+
 resource "yandex_compute_instance" "vm" {
   name = "terraform-yc-app-template-vm"
 
@@ -50,8 +61,8 @@ resource "yandex_compute_instance" "vm" {
   }
 
   network_interface {
-    subnet_id = "e9b6ninrcea75f4ors6f"
-    # Assign a dynamic public IP address
+    subnet_id = yandex_vpc_subnet.ru_central1_a.id
+    # Assign a public IP address
     nat            = true
     nat_ip_address = yandex_vpc_address.public_ip.external_ipv4_address[0].address
   }
