@@ -31,14 +31,49 @@ provider "yandex" {
 }
 
 resource "yandex_vpc_network" "network" {
-  name = "terraform-yc-app-template-network"
+  name        = "terraform-yc-app-template-network"
+  description = "Groups all the managed resources"
 }
 
 resource "yandex_vpc_subnet" "ru_central1_a" {
   name           = "terraform-yc-app-template-subnet-ru-central1-a"
+  description    = "Groups the managed resources located in the ru-central1-a availability zone"
   zone           = "ru-central1-a"
   network_id     = yandex_vpc_network.network.id
   v4_cidr_blocks = ["10.10.0.0/24"]
+}
+
+resource "yandex_vpc_security_group" "vm" {
+  name        = "terraform-yc-app-template-security-group-vm"
+  description = "Controls traffic to and from virtual machines"
+  network_id  = yandex_vpc_network.network.id
+
+  ingress {
+    protocol       = "TCP"
+    description    = "Allows SSH connections for server administration"
+    port           = 22
+    v4_cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    protocol       = "TCP"
+    description    = "Allows HTTP connections for web applications"
+    port           = 80
+    v4_cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    protocol       = "TCP"
+    description    = "Allows HTTPS connections for web applications"
+    port           = 443
+    v4_cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    protocol       = "ANY"
+    description    = "Allows all outbound traffic"
+    v4_cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 resource "yandex_compute_instance" "vm" {
@@ -63,8 +98,9 @@ resource "yandex_compute_instance" "vm" {
   network_interface {
     subnet_id = yandex_vpc_subnet.ru_central1_a.id
     # Assign a public IP address
-    nat            = true
-    nat_ip_address = yandex_vpc_address.public_ip.external_ipv4_address[0].address
+    nat                = true
+    nat_ip_address     = yandex_vpc_address.public_ip.external_ipv4_address[0].address
+    security_group_ids = [yandex_vpc_security_group.vm.id]
   }
 
   metadata = {

@@ -19,11 +19,12 @@ The managed infrastructure consists of a minimal set of resources, which simplif
 First, the configuration explicitly creates the necessary networking infrastructure:
 
 - a network that the resources belong to;
-- a subnet in the `ru-central1-a` availability zone.
+- a subnet in the `ru-central1-a` availability zone;
+- a security group defining traffic rules for virtual machines.
 
 The resources are then created inside this network:
 
-- a virtual machine;
+- a virtual machine, using the security group to control its network traffic;
 - an HDD disk attached to the virtual machine, used to store the operating system and other data;
 - a static public IP address assigned to the virtual machine.
 
