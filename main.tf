@@ -31,12 +31,12 @@ provider "yandex" {
 }
 
 resource "yandex_vpc_network" "network" {
-  name        = "terraform-yc-app-template-network"
+  name        = local.network_name
   description = "Groups all the managed resources"
 }
 
 resource "yandex_vpc_subnet" "ru_central1_a" {
-  name           = "terraform-yc-app-template-subnet-ru-central1-a"
+  name           = local.subnet_ru_central1_a_name
   description    = "Groups the managed resources located in the ru-central1-a availability zone"
   zone           = "ru-central1-a"
   network_id     = yandex_vpc_network.network.id
@@ -44,7 +44,7 @@ resource "yandex_vpc_subnet" "ru_central1_a" {
 }
 
 resource "yandex_vpc_security_group" "vm" {
-  name        = "terraform-yc-app-template-security-group-vm"
+  name        = local.security_group_vm_name
   description = "Controls traffic to and from virtual machines"
   network_id  = yandex_vpc_network.network.id
 
@@ -77,11 +77,11 @@ resource "yandex_vpc_security_group" "vm" {
 }
 
 resource "yandex_compute_instance" "vm" {
-  name = "terraform-yc-app-template-vm"
+  name = local.vm_name
 
   resources {
-    cores  = 2
-    memory = 4 # GB
+    cores  = var.vm_configuration.cores
+    memory = var.vm_configuration.memory
   }
 
   scheduling_policy {
@@ -104,8 +104,8 @@ resource "yandex_compute_instance" "vm" {
   }
 
   metadata = {
-    # Public key installed for the "ubuntu" user via cloud-init
-    ssh-keys = "ubuntu:${file("~/.ssh/id_rsa.pub")}"
+    # Public key installed for the specific user via cloud-init
+    ssh-keys = "${var.user}:${var.ssh_public_key}"
   }
 
   # Allow Terraform to stop the resource if needed when applying changes
@@ -113,11 +113,11 @@ resource "yandex_compute_instance" "vm" {
 }
 
 resource "yandex_compute_disk" "boot_disk" {
-  name = "terraform-yc-app-template-boot-disk"
+  name = local.boot_disk_name
 
-  image_id = "fd806u1okplml22f4pmo" # Ubuntu 22.04 LTS image
-  size     = 10                     # GB
-  type     = "network-hdd"
+  image_id = var.boot_disk_configuration.image_id
+  size     = var.boot_disk_configuration.size
+  type     = var.boot_disk_configuration.type
 
   lifecycle {
     # Prevent accidental resource destruction by making Terraform fail instead
@@ -126,7 +126,7 @@ resource "yandex_compute_disk" "boot_disk" {
 }
 
 resource "yandex_vpc_address" "public_ip" {
-  name = "terraform-yc-app-template-public-ip"
+  name = local.public_ip_name
 
   external_ipv4_address {
     zone_id = "ru-central1-a"

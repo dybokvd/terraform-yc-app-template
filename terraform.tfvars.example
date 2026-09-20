@@ -1,0 +1,6 @@
+ssh_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7b2Q9xK4mN8pR3vT6wY1zA5cF7hJ9kL2mP4qS6uV8xZ0bD3eG5iH7jK9lM1nP3qR5sT7uV9wX1yZ3aB5cD7eF9gH1jK3lM5nP7qR9sT1uV3wX5yZ7aB9cD1eF3gH5jK7lM9nP1qR3sT5uV7wX9yZ1aB3cD5eF7gH9jK1lM3nP5qR7sT9uV1wX3yZ5aB7cD9eF1gH3jK5lM7nP9qR1sT3uV5wX7yZ9 example@example.com"
+
+vm_configuration = {
+  cores  = 4
+  memory = 8
+}
