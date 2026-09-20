@@ -1,35 +1,3 @@
-terraform {
-  required_providers {
-    yandex = {
-      source  = "yandex-cloud/yandex"
-      version = ">= 0.87.0"
-    }
-  }
-  required_version = ">= 0.13"
-
-  # S3 backend works here because Yandex Object Storage is S3-compatible
-  backend "s3" {
-    endpoints = {
-      s3 = "https://storage.yandexcloud.net"
-    }
-
-    bucket = "dibok396-terraform-states-bucket"
-    region = "ru-central1"
-    key    = "terraform-yc-app-template/production/terraform.tfstate"
-
-    # Skip AWS-specific checks that do not apply to Yandex Object Storage
-    skip_region_validation      = true
-    skip_credentials_validation = true
-    skip_requesting_account_id  = true
-    skip_s3_checksum            = true
-  }
-}
-
-provider "yandex" {
-  # Default availability zone for resources that don't specify one explicitly
-  zone = "ru-central1-a"
-}
-
 resource "yandex_vpc_network" "network" {
   name        = local.network_name
   description = "Groups all the managed resources"
