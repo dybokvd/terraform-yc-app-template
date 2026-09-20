@@ -18,15 +18,16 @@ variable "project_name" {
 
 variable "vm_configuration" {
   type = object({
-    cores  = number
-    memory = number
+    cores         = number
+    memory        = number
+    core_fraction = number
   })
 
-  description = "Number of CPU cores and amount of memory in GB allocated to the virtual machine"
-
+  description = "Number of CPU cores, core fraction and amount of memory in GB allocated to the virtual machine"
   default = {
-    cores  = 2
-    memory = 4 # GB
+    cores         = 2
+    memory        = 4   # GB
+    core_fraction = 100 # %
   }
 }
 
@@ -47,6 +48,6 @@ variable "boot_disk_configuration" {
 
   validation {
     condition     = contains(["network-hdd", "network-ssd", "network-ssd-nonreplicated"], var.boot_disk_configuration.type)
-    error_message = "boot_disk.type must be one of: network-hdd, network-ssd, network-ssd-nonreplicated."
+    error_message = "boot_disk_configuration.type must be one of: network-hdd, network-ssd, network-ssd-nonreplicated."
   }
 }

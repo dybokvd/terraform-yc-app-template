@@ -48,8 +48,9 @@ resource "yandex_compute_instance" "vm" {
   name = local.vm_name
 
   resources {
-    cores  = var.vm_configuration.cores
-    memory = var.vm_configuration.memory
+    cores         = var.vm_configuration.cores
+    memory        = var.vm_configuration.memory
+    core_fraction = var.vm_configuration.core_fraction
   }
 
   scheduling_policy {

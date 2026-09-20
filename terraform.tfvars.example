@@ -3,4 +3,5 @@ ssh_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7b2Q9xK4mN8pR3vT6wY1zA5
 vm_configuration = {
   cores  = 4
   memory = 8
+  core_fraction = 20
 }
